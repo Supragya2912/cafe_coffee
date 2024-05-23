@@ -5,6 +5,7 @@ import { persistStore, persistReducer } from 'redux-persist';
 import beansReducer from './reducers/beansSlice';
 import coffeeReducer from './reducers/coffeeSlice';
 import { combineReducers } from 'redux';
+import cartReducer from './reducers/cartSlice';
 
 const persistConfig = {
   key: 'root',
@@ -14,6 +15,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   beans: beansReducer,
   coffee: coffeeReducer,
+  cart: cartReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
