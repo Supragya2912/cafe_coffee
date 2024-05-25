@@ -94,7 +94,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
                                     size={FONTSIZE.size_16}
                                     color={COLORS.primaryOrangeHex}
                                 />
-                                <Text style={styles.PropertyTextFirst}>{ingredients}</Text>
+                                <Text style={styles.PropertyTextLast}>{ingredients}</Text>
                             </View>
                         </View>
                     </View>

@@ -2,9 +2,15 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface CartItem {
     id: string;
+    type: string;
     name: string;
-    price: number;
+    price: any;
     quantity: number;
+    size: string;
+    special_ingredient: string;
+    imagelink_square: string;
+    roasted: string;
+    index: string;
 }
 
 interface CartState {
@@ -16,29 +22,25 @@ const initialState: CartState = {
 };
 
 const cartSlice = createSlice({
-
     name: 'cart',
     initialState,
     reducers: {
-
         addToCart: (state, action: PayloadAction<CartItem>) => {
-            const { id, quantity } = action.payload;
-            const index = state.cart.findIndex(item => item.id === id);
+            const { id, size, quantity } = action.payload;
+            const index = state.cart.findIndex(item => item.id === id && item.size === size);
             if (index !== -1) {
                 state.cart[index].quantity += quantity;
             } else {
-                state.cart.push(action.payload);
-            }
-        }
-        ,
-        increaseQuantity: (state, action: PayloadAction<string>) => {
-            const index = state.cart.findIndex(item => item.id === action.payload);
-            if (index !== -1) {
-                state.cart[index].quantity += 1;
+                state.cart.push({ ...action.payload });
             }
         },
-
-    }
+        // increaseQuantity: (state, action: PayloadAction<{ id: string; size: string }>) => {
+        //     const index = state.cart.findIndex(item => item.id === action.payload.id && item.size === action.payload.size);
+        //     if (index !== -1) {
+        //         state.cart[index].quantity += 1;
+        //     }
+        // },
+    },
 });
 
 export const { addToCart } = cartSlice.actions;
