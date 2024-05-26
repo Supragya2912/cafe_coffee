@@ -6,7 +6,7 @@ const Favourite = () => {
 
 
   const favourite = useSelector((state: any) => state.favourite.favourite);
-  console.log(favourite);
+  console.log("fav",favourite);
   return (
     <View>
       <Text>Favourite</Text>

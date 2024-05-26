@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import ImageBackgroundInfo from '../components/ImageBackgroundInfo';
-import { addToFavoriteList } from '../redux/reducers/favouriteSlice';
+import { addToFavoriteList, removeFromFavoriteList } from '../redux/reducers/favouriteSlice';
 import PaymentFooter from '../components/PaymentFooter';
 import { addToCart } from '../redux/reducers/CartSlice';
 
 const DetailScreen = ({ navigation, route }: any) => {
 
-  const { type, index } = route.params;
   const dispatch = useDispatch();
+  const { type, index } = route.params;
   const dataFromRedux = useSelector((state: any) =>
     type === 'Coffee' ? state.coffee.coffee[index] : state.beans.beans[index]
   );
@@ -21,14 +21,17 @@ const DetailScreen = ({ navigation, route }: any) => {
     navigation.pop();
   }
 
-  const toggleFavourite = (favourite: boolean, type: string, id: string) => {
-    dispatch(addToFavoriteList({ type, id }));
+  console.log("DATA", dataFromRedux.imagelink_square);
+
+  const toggleFavourite = (favourite: boolean, type: string, id: string, imagelink_square: string, name: string) => {
+    if (!favourite) {
+      dispatch(addToFavoriteList({ id, name, type, imagelink_square, favourite: true}));
+    } else {
+      dispatch(removeFromFavoriteList({ id, name, type, imagelink_square, favourite: false }));
+    }
   };
 
- const addItemToCart = () => {
-  const { id, index, name, roasted, imagelink_square, special_ingredient, type } = dataFromRedux;
-  
-  dispatch(addToCart({
+  const addItemToCart = ({
     id,
     index,
     name,
@@ -37,12 +40,23 @@ const DetailScreen = ({ navigation, route }: any) => {
     special_ingredient,
     type,
     price,
-    quantity: 1,
-    size: price.size,
-  }));
+  }: any) => {
+    // const { id, index, name, roasted, imagelink_square, special_ingredient, type, size } = dataFromRedux;
 
-  navigation.navigate('Cart');
-};
+    dispatch(addToCart({
+      id,
+      type,
+      name,
+      price: [{ ...price }],
+      quantity: 1,
+      special_ingredient,
+      imagelink_square,
+      roasted,
+      index,
+    }));
+
+    navigation.navigate('Cart');
+  };
 
   return (
     <View style={styles.ScreenContainer}>
@@ -110,7 +124,16 @@ const DetailScreen = ({ navigation, route }: any) => {
           price={price}
           buttonTitle='Add to Cart'
           buttonPressHandler={() => {
-            addItemToCart();
+            addItemToCart({
+              id: dataFromRedux.id,
+              index: dataFromRedux.index,
+              name: dataFromRedux.name,
+              roasted: dataFromRedux.roasted,
+              imagelink_square: dataFromRedux.imagelink_square,
+              special_ingredient: dataFromRedux.special_ingredient,
+              type: dataFromRedux.type,
+              price: price,
+            });
           }
           }
         />

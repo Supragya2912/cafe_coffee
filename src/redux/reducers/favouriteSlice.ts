@@ -7,7 +7,6 @@ interface Favourite {
     name: string;
     type: string;
     imagelink_square: string;
-    description: string;
     favourite: boolean;
 }
 
@@ -27,23 +26,19 @@ const favouriteSlice = createSlice({
     name: 'favourite',
     initialState,
     reducers: {
-        addToFavoriteList: (state, action: PayloadAction<{ type: string, id: string }>) => {
-            const { type, id } = action.payload;
-            const item = type === 'Coffee' ?
-                state.coffeeList.find(item => item.id === id)
-                : state.beanList.find(item => item.id === id);
-            if (item) {
-                const isFavourite = state.favourite.find(fav => fav.id === id);
-                if (isFavourite) {
-                    state.favourite = state.favourite.filter(fav => fav.id !== id);
-                } else {
-                    state.favourite.push(item);
-                }
-            }
+
+        addToFavoriteList: (state, action: PayloadAction<Favourite>) => {
+            const { id, name, type, imagelink_square } = action.payload;
+            state.favourite.push({ id, name, type, imagelink_square, favourite: true });
+        }
+        ,
+        removeFromFavoriteList: (state, action: PayloadAction<Favourite>) => {
+            const { id, name, type, imagelink_square } = action.payload;
+            state.favourite = state.favourite.filter((item) => item.id !== id);
         }
 
     }
 });
 
-export const { addToFavoriteList } = favouriteSlice.actions;
+export const { addToFavoriteList ,removeFromFavoriteList} = favouriteSlice.actions;
 export default favouriteSlice.reducer;

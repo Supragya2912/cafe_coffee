@@ -1,12 +1,13 @@
-import { StyleSheet, Text, View, StatusBar, ScrollView, TouchableOpacity, TextInput, FlatList, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, StatusBar, ScrollView, TouchableOpacity, TextInput, FlatList, Dimensions, ToastAndroid } from 'react-native'
 import React, { useRef, useState } from 'react'
 import { RootState } from '../redux/store';
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 import { BORDERRADIUS, COLORS, FONTFAMILY, FONTSIZE, SPACING } from '../theme/theme';
 import HeaderBar from '../components/HeaderBar';
 import CustomIcon from '../components/CustomIcon';
 import CoffeeCard from '../components/CoffeeCard';
+import { addToCart } from '../redux/reducers/CartSlice';
 
 interface Price {
   size: string;
@@ -59,7 +60,7 @@ const getCoffeeList = (category: string, data: CoffeeItem[]) => {
 
 
 
-const HomeScreen = ({navigation}: any) => {
+const HomeScreen = ({ navigation }: any) => {
 
   const beans = useSelector((state: RootState) => state.beans.beans as CoffeeItem[]);
   const coffee = useSelector((state: RootState) => state.coffee.coffee as CoffeeItem[]);
@@ -74,11 +75,12 @@ const HomeScreen = ({navigation}: any) => {
   const [sortedCoffee, setSortedCoffee] = useState(getCoffeeList(categoryIndex.category, coffee as CoffeeItem[]));
   const tabBarHeight = useBottomTabBarHeight();
   const ListRef: any = useRef<FlatList>(null);
+  const dispatch = useDispatch();
 
   const searchCoffee = (search: string) => {
     if (search != '') {
-      ListRef ?.current ?.scrollToOffset({ offset: 0, animated: true });
-      setCategoryIndex({index: 0, category: categories[0]});
+      ListRef?.current?.scrollToOffset({ offset: 0, animated: true });
+      setCategoryIndex({ index: 0, category: categories[0] });
       setSortedCoffee([
         ...coffee.filter((item: any) =>
           item.name.toLowerCase().includes(search.toLowerCase()),
@@ -88,11 +90,39 @@ const HomeScreen = ({navigation}: any) => {
   };
 
   const resetSearchCoffee = () => {
-    ListRef ?.current ?.scrollToOffset({ offset: 0, animated: true });
-    setCategoryIndex({index: 0, category: categories[0]});
+    ListRef?.current?.scrollToOffset({ offset: 0, animated: true });
+    setCategoryIndex({ index: 0, category: categories[0] });
     setSortedCoffee([...coffee]);
     setSearchText('');
   }
+
+  const addItemToCart = ({
+    id,
+    index,
+    name,
+    roasted,
+    imagelink_square,
+    special_ingredient,
+    type,
+    prices,
+  }: any) => {
+    // const { id, index, name, roasted, imagelink_square, special_ingredient, type, size } = dataFromRedux;
+
+    dispatch(addToCart({
+      id,
+      type,
+      name,
+      quantity: 1,
+      special_ingredient,
+      imagelink_square,
+      roasted,
+      index,
+      price: { ...prices, quantity: 1 }
+    }));
+    ToastAndroid.showWithGravity(`${name} is added to Cart`, ToastAndroid.SHORT, ToastAndroid.CENTER);
+
+  };
+
 
   return (
     <View style={styles.ScreenContainer}>
@@ -104,7 +134,7 @@ const HomeScreen = ({navigation}: any) => {
         <Text style={styles.ScreenTitle}>Find the best{'\n'}coffee for you</Text>
 
         <View style={styles.InputContainerComponent}>
-          <TouchableOpacity onPress={() => { 
+          <TouchableOpacity onPress={() => {
             searchCoffee(searchText);
           }}>
             <CustomIcon
@@ -123,16 +153,16 @@ const HomeScreen = ({navigation}: any) => {
           ></TextInput>
           {
             searchText.length > 0 ? (
-            <TouchableOpacity onPress={() => {
-              resetSearchCoffee();
-            }}>
-              <CustomIcon
-                name="close"
-                size={FONTSIZE.size_16}
-                color={COLORS.primaryLightGreyHex}
-                style={styles.InputIcon}
-              />
-            </TouchableOpacity>):(
+              <TouchableOpacity onPress={() => {
+                resetSearchCoffee();
+              }}>
+                <CustomIcon
+                  name="close"
+                  size={FONTSIZE.size_16}
+                  color={COLORS.primaryLightGreyHex}
+                  style={styles.InputIcon}
+                />
+              </TouchableOpacity>) : (
               <></>
             )
           }
@@ -150,7 +180,7 @@ const HomeScreen = ({navigation}: any) => {
                 style={styles.CategoryScrollViewContainer}
               >
                 <TouchableOpacity style={styles.CategoryScrollViewItem} onPress={() => {
-                  ListRef ?.current ?.scrollToOffset({ offset: 0, animated: true });
+                  ListRef?.current?.scrollToOffset({ offset: 0, animated: true });
                   setCategoryIndex(
                     {
                       index: index,
@@ -186,24 +216,24 @@ const HomeScreen = ({navigation}: any) => {
           keyExtractor={item => item.id}
           renderItem={({ item }) => {
             return <TouchableOpacity onPress={() => {
-              navigation.push('Details',{
+              navigation.push('Details', {
                 index: item.index,
                 id: item.id,
                 type: item.type,
               })
-             }}>
+            }}>
               <CoffeeCard
                 name={item.name}
                 id={item.id}
                 index={item.index}
                 type={item.type}
-                rosted={item.roasted}
+                roasted={item.roasted}
                 imagelink_square={item.imagelink_square}
                 special_ingredient={item.special_ingredient}
                 average_rating={item.average_rating}
                 price={item.prices[2]}
                 buttonPressHandler={
-                  () => { }
+                  addItemToCart
                 } />
             </TouchableOpacity>
           }}
@@ -222,24 +252,24 @@ const HomeScreen = ({navigation}: any) => {
           keyExtractor={item => item.id}
           renderItem={({ item }) => {
             return <TouchableOpacity onPress={() => {
-              navigation.push('Details',{
+              navigation.push('Details', {
                 index: item.index,
                 id: item.id,
                 type: item.type,
               })
-             }}>
+            }}>
               <CoffeeCard
                 name={item.name}
                 id={item.id}
                 index={item.index}
                 type={item.type}
-                rosted={item.roasted}
+                roasted={item.roasted}
                 imagelink_square={item.imagelink_square}
                 special_ingredient={item.special_ingredient}
                 average_rating={item.average_rating}
                 price={item.prices[2]}
                 buttonPressHandler={
-                  () => { }
+                  addItemToCart
                 } />
             </TouchableOpacity>
           }}
