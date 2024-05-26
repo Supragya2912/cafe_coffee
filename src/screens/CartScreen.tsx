@@ -44,6 +44,7 @@ const CartScreen = ({ navigation, route }: any) => {
                            roasted={data.roasted}
                            prices={data.prices}
                            type={data.type}
+                            quantity={data.quantity}
                            incrementCartItemQuantityHandler={
                             increaseQuantity
                           }

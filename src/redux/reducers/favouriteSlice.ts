@@ -6,6 +6,7 @@ interface Favourite {
     id: string;
     name: string;
     type: string;
+    description: string;
     imagelink_square: string;
     favourite: boolean;
 }
@@ -28,8 +29,8 @@ const favouriteSlice = createSlice({
     reducers: {
 
         addToFavoriteList: (state, action: PayloadAction<Favourite>) => {
-            const { id, name, type, imagelink_square } = action.payload;
-            state.favourite.push({ id, name, type, imagelink_square, favourite: true });
+            const { id, name, type, imagelink_square, description } = action.payload;
+            state.favourite.push({ id, name, type, imagelink_square, favourite: true ,description});
         }
         ,
         removeFromFavoriteList: (state, action: PayloadAction<Favourite>) => {

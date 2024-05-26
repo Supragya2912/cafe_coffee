@@ -23,11 +23,11 @@ const DetailScreen = ({ navigation, route }: any) => {
 
   console.log("DATA", dataFromRedux.imagelink_square);
 
-  const toggleFavourite = (favourite: boolean, type: string, id: string, imagelink_square: string, name: string) => {
+  const toggleFavourite = (favourite: boolean, type: string, id: string, imagelink_square: string, name: string, description: string) => {
     if (!favourite) {
-      dispatch(addToFavoriteList({ id, name, type, imagelink_square, favourite: true}));
+      dispatch(addToFavoriteList({ id, name, type, imagelink_square, favourite: true, description}));
     } else {
-      dispatch(removeFromFavoriteList({ id, name, type, imagelink_square, favourite: false }));
+      dispatch(removeFromFavoriteList({ id, name, type, imagelink_square, favourite: false, description }));
     }
   };
 

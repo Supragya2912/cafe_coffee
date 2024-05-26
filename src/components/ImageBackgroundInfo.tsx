@@ -49,7 +49,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
                                 size={FONTSIZE.size_16} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
-                            toggleFavourite(favourite, type, id);
+                            toggleFavourite(favourite, type, id, imagelink_portrait, name, special_ingredient, ingredients, average_rating, ratings_count, roasted);
                         }}>
                             <GradientBGIcon
                                 name='like'
@@ -61,7 +61,7 @@ const ImageBackgroundInfo: React.FC<ImageBackgroundInfoProps> = ({
                     <View style={styles.nobackHandlerContainer}>
 
                         <TouchableOpacity onPress={() => {
-                            toggleFavourite(favourite, type, id);
+                            toggleFavourite(favourite, type, id, imagelink_portrait, name, special_ingredient, ingredients, average_rating, ratings_count, roasted);
                         }}>
                             <GradientBGIcon
                                 name='like'
